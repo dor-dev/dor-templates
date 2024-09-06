@@ -1,0 +1,151 @@
+* {
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+
+  scrollbar-width: thin;
+  accent-color: var(--secondary-color);
+}
+
+*::selection {
+  background-color: var(--primary-color);
+  color: var(--background-color-80);
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+}
+
+header {
+  position: relative;
+  height: var(--header-height);
+  background-color: var(--background-color-90);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.5rem;
+  z-index: 1;
+}
+header .shadow {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0));
+}
+
+header menu {
+  display: flex;
+  gap: 1rem;
+}
+
+.main-container {
+  height: calc(100vh - var(--header-height));
+  display: flex;
+}
+
+aside {
+  position: relative;
+  flex: 0 0 var(--aside-left-width);
+  background-color: var(--background-color-80);
+  padding: 1rem;
+  transition: flex-basis var(--toggling-duration) ease-out;
+}
+aside .shadow {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  height: calc(100vh - var(--header-height));
+  width: 5px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0));
+}
+
+aside:nth-of-type(2) {
+  flex: 0 0 var(--aside-right-width);
+}
+aside:nth-of-type(2) .shadow {
+  display: none;
+}
+
+aside menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+main {
+  flex: 1 1 auto;
+  overflow: auto;
+  scroll-behavior: smooth;
+}
+
+main section {
+  min-height: calc(100vh - var(--header-height));
+  padding: 1rem 1.5rem;
+  max-width: 1000px;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  border: none;
+  background-color: transparent;
+  color: var(--foreground-color);
+  fill: var(--foreground-color);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+button svg {
+  vertical-align: middle;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.toggled {
+  flex-basis: 0px !important;
+}
+
+.toggled, 
+.toggling {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.toggled *, 
+.toggling * {
+  display: none !important;
+}
+
+input {
+  border: none;
+  border-radius: 3px;
+}
+
+fieldset {
+  padding: 1rem;
+  border-radius: 5px;
+  border: 2px solid var(--background-color-90);
+  display: inline-block;
+}
+fieldset legend {
+  color: var(--primary-color);
+  padding: 0 .5rem;
+}

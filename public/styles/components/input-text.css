@@ -1,0 +1,35 @@
+.input-text {
+  height: 45px;
+  max-width: 250px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: 18px;
+  border-radius: 5px;
+  color: var(--background-color-80);
+}
+
+.input-text.focused label {
+  transform: scale(.75) translateY(-10px);
+}
+
+.input-text label {
+  position: absolute;
+  left: .75rem;
+  transition: transform .25s;
+  transform-origin: 0 0;
+}
+
+.input-text input {
+  padding: 15px .75rem 0px;
+  height: 100%;
+  width: 100%;
+  font-size: 16px;
+  background-color: var(--primary-color);
+  color: var(--background-color-80);
+}
+
+.input-text input::selection {
+  background-color: var(--background-color-80);
+  color: var(--primary-color);
+}

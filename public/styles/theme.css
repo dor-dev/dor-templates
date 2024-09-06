@@ -1,0 +1,19 @@
+body {
+  --foreground-color: #555;
+  --background-color: #FFF;
+  --background-color-90: #FFF;
+  --background-color-80: #FFF;
+
+  --primary-color: #21b791;
+  --secondary-color: #f04a79;
+}
+
+body.dark {
+  --foreground-color: #CCC;
+  --background-color: #151618;
+  --background-color-90: #232528;
+  --background-color-80: #1e1f22;
+
+  --primary-color: #E3B459;
+  --secondary-color: #32ca8a;
+}

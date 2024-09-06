@@ -1,0 +1,11 @@
+button {
+  fill: var(--primary-color);
+}
+
+menu {
+  color: var(--primary-color);
+}
+
+section h2 {
+  color: var(--primary-color);
+}

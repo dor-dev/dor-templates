@@ -1,0 +1,6 @@
+:root {
+  --header-height: 50px;
+  --aside-left-width: 260px;
+  --aside-right-width: 200px;
+  --toggling-duration: .15s;
+}

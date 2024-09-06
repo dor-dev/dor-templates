@@ -1,0 +1,42 @@
+.input-radio {
+  height: 45px;
+  max-width: 250px;
+  min-width: 120px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: 18px;
+  border-radius: 5px;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.input-radio.focused {
+  border-color: var(--secondary-color);
+  outline: 1px solid var(--secondary-color);
+}
+
+.input-radio.selected {
+  background-color: var(--primary-color);
+  color: var(--background-color-80);
+}
+
+.input-radio label {
+  position: absolute;
+  left: .75rem;
+}
+
+.input-radio input {
+  padding: 15px .75rem 0px;
+  height: 100%;
+  width: 100%;
+  font-size: 16px;
+  color: var(--background-color-80);
+  opacity: 0;
+  cursor: pointer;
+}
+
+.input-radio input::selection {
+  background-color: var(--background-color-80);
+  color: var(--primary-color);
+}
