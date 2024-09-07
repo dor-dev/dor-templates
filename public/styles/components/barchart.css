@@ -1,0 +1,45 @@
+.dor-barchart-grid {
+  --grid-fractions: 1;
+  gap: .5rem;
+  display: grid;
+  height: 500px;
+  grid-template-rows: 1fr 100px;
+  grid-template-columns: auto repeat(var(--grid-fractions), 1fr); 
+}
+
+.dor-barchart-item {
+  align-content: flex-end;
+  position: relative;
+}
+
+.dor-barchart-item .dor-popup {
+  right: initial;
+  bottom: initial;
+  left: 50%;
+  top: 25%;
+  margin: 0;
+}
+
+.dor-barchart-item .dor-barchart-column {
+  background-color: var(--primary-color);
+}
+
+.dor-barchart-item.selected .dor-barchart-column {
+  background-color: var(--secondary-color);
+}
+
+.dor-barchart-y.dor-barchart-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.dor-barchart-x.dor-barchart-info {
+  align-content: center;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

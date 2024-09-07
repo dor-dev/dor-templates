@@ -25,9 +25,13 @@
 
     <link rel="stylesheet" href="./public/styles/pages/index.css">
 
+    <link rel="stylesheet" href="./public/styles/components/base.css">
+
     <link rel="stylesheet" href="./public/styles/components/input-text.css">
     <link rel="stylesheet" href="./public/styles/components/input-radio.css">
     <link rel="stylesheet" href="./public/styles/components/input-checkbox.css">
+
+    <link rel="stylesheet" href="./public/styles/components/barchart.css">
 <body class="dark">
   
   <header>
@@ -57,7 +61,7 @@
       </menu>
       <div class="shadow"></div>
     </aside>
-    <main>
+    <main tabindex="-1">
       <section id="section-1">
         <h2>Section 1</h2>
 
@@ -91,14 +95,13 @@
               <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>
             </div>
             <br />
-            <div class="input-checkbox" style="width: 160px; margin-top: 1rem;">
+            <div class="input-checkbox" style="width: 160px;">
               <label for="new-false">No stammina</label>
               <input type="checkbox" name="new-false" value="false" />
               <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>
             </div>
           </fieldset>
         </form>
-
       </section>
       <section id="section-2">
         <h2>Section 2</h2>
@@ -106,6 +109,7 @@
       </section>
       <section id="section-3">
         <h2>Section 3</h2>
+        <div id="barchart-demo" style="margin-top: 1rem;"></div>
       </section>
     </main>
     <aside id="aside-right">
@@ -113,9 +117,13 @@
     </aside>
   </div>
 
+  <script defer src="./public/scripts/base.js"></script>
   <script defer src="./public/scripts/index.js"></script>
+
   <script defer src="./public/scripts/components/input-text.js"></script>
   <script defer src="./public/scripts/components/input-radio.js"></script>
   <script defer src="./public/scripts/components/input-checkbox.js"></script>
+
+  <script defer src="./public/scripts/components/barchart.js"></script>
 </body>
 </html>

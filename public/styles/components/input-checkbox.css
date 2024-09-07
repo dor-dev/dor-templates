@@ -6,8 +6,6 @@
   display: inline-flex;
   align-items: center;
   font-size: 18px;
-  border-radius: 5px;
-  border: 1px solid var(--primary-color);
   color: var(--primary-color);
 }
 
@@ -17,15 +15,16 @@
 }
 
 .input-checkbox svg {
-  display: none;
   pointer-events: none;
   position: absolute;
   right: .5rem;
-  fill: var(--primary-color);
+  fill: transparent;
+  border: 1px solid var(--primary-color);
 }
 
 .input-checkbox.selected svg {
   display: initial;
+  fill: var(--primary-color);
 }
 
 .input-checkbox label {

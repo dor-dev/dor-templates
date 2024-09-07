@@ -149,3 +149,7 @@ fieldset legend {
   color: var(--primary-color);
   padding: 0 .5rem;
 }
+
+b {
+  color: var(--primary-color);
+}

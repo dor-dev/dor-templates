@@ -1,4 +1,4 @@
-Array.from(document.querySelectorAll(".input-checkbox")).forEach(inputContainer => {
+document.querySelectorAll(".input-checkbox").forEach(inputContainer => {
   const input = inputContainer.querySelector("input");
   if (input.defaultChecked) {
     inputContainer.classList.add("selected");

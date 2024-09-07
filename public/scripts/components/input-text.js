@@ -1,4 +1,4 @@
-Array.from(document.querySelectorAll(".input-text")).forEach(inputContainer => {
+document.querySelectorAll(".input-text").forEach(inputContainer => {
   const input = inputContainer.querySelector("input");
   if (input.value) {
     inputContainer.classList.add("focused");
