@@ -147,22 +147,25 @@ class DorBarChart {
         const gridContainer = parent.closest(".dor-barchart-grid");
         const gridHeight = gridContainer.offsetHeight;
         const gridWidth = gridContainer.offsetWidth;
-
-        const rightHalfOfScreen = childOffsets[0] >= gridWidth / 2;
-        if (rightHalfOfScreen) {
-          popupElement.style.right = "50%";
-          popupElement.style.left = "initial";
-        }
-
-        const notAtTheTopOfParent = childOffsets[1] >= gridHeight / 2;
-        if (notAtTheTopOfParent) {
-          popupElement.style.bottom = "25%";
-          popupElement.style.top = "initial";
-        }
         
         const itemParents = document.querySelectorAll(`[data-id="${parentId}"]`);
         itemParents.forEach(itemParent => {
-          itemParent.prepend(popupElement.cloneNode(true));
+          const clonedNode = popupElement.cloneNode(true);
+          if (itemParent.classList.contains("display-small")) {
+            const notAtTheTopOfParent = childOffsets[1] <= gridHeight / 2;
+            if (notAtTheTopOfParent) {
+              clonedNode.style.top = "0";
+              clonedNode.style.bottom = "initial";
+            }
+          }
+          if (itemParent.classList.contains("display-big")) {
+            const rightHalfOfScreen = childOffsets[0] >= gridWidth / 2;
+            if (rightHalfOfScreen && gridWidth > 720) {
+              clonedNode.style.right = "calc(50% - .5rem)";
+              clonedNode.style.left = "initial";
+            }
+          }
+          itemParent.prepend(clonedNode);
         });
       }
     });
