@@ -1,15 +1,24 @@
+.dor-barchart {
+  container-type: inline-size;
+  container-name: barchart;
+
+  --barchart-row-height: 22px;
+}
+
 .dor-barchart-grid {
   --grid-fractions: 1;
   gap: .5rem;
   display: grid;
   height: 500px;
   grid-template-rows: 1fr 100px;
-  grid-template-columns: auto repeat(var(--grid-fractions), 1fr); 
+  grid-template-columns: auto repeat(var(--grid-fractions), 1fr);
+  overflow: hidden;
 }
 
 .dor-barchart-item {
   align-content: flex-end;
   position: relative;
+  cursor: pointer;
 }
 
 .dor-barchart-item .dor-popup {
@@ -20,8 +29,17 @@
   margin: 0;
 }
 
+.dor-barchart-grid .display-big {
+  display: unset !important;
+}
+.dor-barchart-grid .display-small {
+  display: none !important;
+}
+
 .dor-barchart-item .dor-barchart-column {
+  --column-size: 100%;
   background-color: var(--primary-color);
+  height: var(--column-size);
 }
 
 .dor-barchart-item.selected .dor-barchart-column {
@@ -42,4 +60,39 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+@container barchart (max-width: 720px) {
+  .dor-barchart-grid {
+    height: auto;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto repeat(var(--grid-fractions), var(--barchart-row-height));
+  }
+
+  .dor-barchart-item .dor-barchart-column {
+    height: var(--barchart-row-height);
+    width: var(--column-size);   
+  }
+
+  .dor-barchart-grid .display-big {
+    display: none !important;
+  }
+  .dor-barchart-grid .display-small {
+    display: unset !important;
+  }
+
+  .dor-barchart-y.dor-barchart-info {
+    display: flex !important;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+  }
+
+  .dor-barchart-x.dor-barchart-info {
+    writing-mode: horizontal-tb;
+    max-width: 120px;
+  }
+
+  .dor-barchart-item .dor-popup {
+    left: .5rem;
+  }
 }

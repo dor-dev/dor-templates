@@ -51,6 +51,8 @@ header menu {
 
 aside {
   position: relative;
+  overflow: auto;
+  overflow-x: hidden;
   flex: 0 0 var(--aside-left-width);
   background-color: var(--background-color-80);
   padding: 1rem;
@@ -88,6 +90,9 @@ main {
 main section {
   min-height: calc(100vh - var(--header-height));
   padding: 1rem 1.5rem;
+}
+
+main section p {
   max-width: 1000px;
 }
 
@@ -117,23 +122,6 @@ button svg {
   display: none !important;
 }
 
-.toggled {
-  flex-basis: 0px !important;
-}
-
-.toggled, 
-.toggling {
-  padding-right: 0 !important;
-  padding-left: 0 !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
-
-.toggled *, 
-.toggling * {
-  display: none !important;
-}
-
 input {
   border: none;
   border-radius: 3px;
@@ -152,4 +140,50 @@ fieldset legend {
 
 b {
   color: var(--primary-color);
+}
+
+@media (max-width: 800px) {
+  aside {
+    position: absolute;
+    top: var(--header-height);
+    left: 0;
+    width: 100%;
+    z-index: 5;
+    max-height: calc(100vh - var(--header-height));
+  }
+  aside:nth-of-type(2) {
+    top: initial;
+    bottom: 0;
+  }
+
+  .toggled {
+    display: none;
+  }
+
+  aside .shadow {
+    display: none;
+  }
+
+  header menu {
+    display: none;
+  }
+}
+
+@media (min-width: 801px) {
+  .toggled {
+    flex-basis: 0px !important;
+  }
+  
+  .toggled *, 
+  .toggling * {
+    display: none !important;
+  }
+
+  .toggled, 
+  .toggling {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
 }

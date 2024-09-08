@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const barChartItems = Array.from({length: 30}, (_, i) => {
     return {
       id: i, 
-      name: "Long item Number " + i, 
+      name: "Item Number " + i, 
       ammount: i * 600, 
     };
   });
@@ -27,20 +27,30 @@ class DorBarChart {
     this.#domElement.classList.add("dor-barchart");
     const htmlAsString = 
     `<div class="dor-barchart-grid" style="--grid-fractions: ${this.#items.length}">` +
+    '<div class="dor-barchart-empty display-small"></div>' + 
     '<div class="dor-barchart-y dor-barchart-info">' + 
     `<span>${shortenNumber(maxAmmount)}</span>` + 
     `<span>${shortenNumber(maxAmmount / 2)}</span>` + 
     `<span>${shortenNumber(0)}</span>` + 
     '</div>' + 
     `${this.#items.map(item => (
-      `<div class="dor-barchart-item" data-id="${item.id}">` + 
+      '<div class="dor-barchart-x dor-barchart-info display-small">' + 
+        `<span title="${item.name}">${item.name}</span>` + 
+      '</div>' + 
+      `<div class="dor-barchart-item display-small" data-id="${item.id}">` + 
         `<div class="dor-barchart-column"` + 
-        `style="height: ${getCurrentItemammount(item.ammount, maxAmmount)}%"></div>` + 
+        `style="--column-size: ${getCurrentItemAmmount(item.ammount, maxAmmount)}%"></div>` + 
       '</div>'
     )).join("")}` + 
-    '<div class="dor-barchart-empty"></div>' + 
     `${this.#items.map(item => (
-      '<div class="dor-barchart-x dor-barchart-info">' + 
+      `<div class="dor-barchart-item display-big" data-id="${item.id}">` + 
+        `<div class="dor-barchart-column"` + 
+        `style="--column-size: ${getCurrentItemAmmount(item.ammount, maxAmmount)}%"></div>` + 
+      '</div>'
+    )).join("")}` + 
+    '<div class="dor-barchart-empty display-big"></div>' + 
+    `${this.#items.map(item => (
+      '<div class="dor-barchart-x dor-barchart-info display-big">' + 
         `<span title="${item.name}">${item.name}</span>` + 
       '</div>'
     )).join("")}` + 
@@ -50,7 +60,7 @@ class DorBarChart {
 
     this.#addEvents();
     
-    function getCurrentItemammount(ammount, maxAmmount) {
+    function getCurrentItemAmmount(ammount, maxAmmount) {
       // x = 100 * ammount / maxAmmount
       return Math.round(100 * ammount / maxAmmount);
     }
@@ -66,9 +76,11 @@ class DorBarChart {
       barChartItems.forEach(item => {
         item.classList.remove("selected");
       });
-      const popup = document.querySelector(".dor-popup");
-      if (popup) {
-        popup.remove();
+      const popups = document.querySelectorAll(".dor-popup");
+      if (popups.length !== 0) {
+        popups.forEach(popup => {
+          popup.remove();
+        });
       }
     });
     
@@ -78,23 +90,27 @@ class DorBarChart {
 
       if (itemData) {
         item.addEventListener("mouseenter", function () {
-          const popup = document.querySelector(".dor-popup");
-          if (popup) {
+          const popups = document.querySelectorAll(".dor-popup");
+          if (popups.length !== 0) {
             if (document.querySelector(".dor-barchart-item.selected")) {
               return;
             }
-            popup.remove();
+            popups.forEach(popup => {
+              popup.remove();
+            });
           }
           createNewPopup(itemData, item);
         });
 
         item.addEventListener("mouseleave", function () {
-          const popup = document.querySelector(".dor-popup");
-          if (popup) {
+          const popups = document.querySelectorAll(".dor-popup");
+          if (popups.length !== 0) {
             if (document.querySelector(".dor-barchart-item.selected")) {
               return;
             }
-            popup.remove();
+            popups.forEach(popup => {
+              popup.remove();
+            });
           }
         });
 
@@ -102,18 +118,24 @@ class DorBarChart {
           barChartItems.forEach(otherItem => {
             if (otherItem.getAttribute("data-id") !== itemId) {
               otherItem.classList.remove("selected");
+            } else {
+              otherItem.classList.toggle("selected");
             }
           });
-          item.classList.toggle("selected");
-          const popup = document.querySelector(".dor-popup");
-          if (popup) {
-            popup.remove();
+          const popups = document.querySelectorAll(".dor-popup");
+          if (popups.length !== 0) {
+            popups.forEach(popup => {
+              popup.remove();
+            });
           }
           createNewPopup(itemData, item);
         });
       }
 
       function createNewPopup(data, parent) {
+        const childOffsets = [parent.offsetLeft, parent.offsetTop];
+        const parentId = parent.getAttribute("data-id");
+
         const popupHtml = 
         `<p><b>Name: </b>${data.name}.</p>` + 
         `<p style="margin-top: .5rem;"><b>Ammount: </b>${formatNumber(data.ammount)}.</p>`;
@@ -122,7 +144,26 @@ class DorBarChart {
         popupElement.classList.add("dor-popup");
         popupElement.innerHTML = popupHtml;
         
-        parent.prepend(popupElement);
+        const gridContainer = parent.closest(".dor-barchart-grid");
+        const gridHeight = gridContainer.offsetHeight;
+        const gridWidth = gridContainer.offsetWidth;
+
+        const rightHalfOfScreen = childOffsets[0] >= gridWidth / 2;
+        if (rightHalfOfScreen) {
+          popupElement.style.right = "50%";
+          popupElement.style.left = "initial";
+        }
+
+        const notAtTheTopOfParent = childOffsets[1] >= gridHeight / 2;
+        if (notAtTheTopOfParent) {
+          popupElement.style.bottom = "25%";
+          popupElement.style.top = "initial";
+        }
+        
+        const itemParents = document.querySelectorAll(`[data-id="${parentId}"]`);
+        itemParents.forEach(itemParent => {
+          itemParent.prepend(popupElement.cloneNode(true));
+        });
       }
     });
   }
