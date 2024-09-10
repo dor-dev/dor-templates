@@ -1,0 +1,74 @@
+.dor-card-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dor-card-gallery .dor-card {
+  flex: 1 1 300px;
+}
+
+.dor-card {
+  box-shadow: 0 0 3px 3px rgba(0, 0, 0, .05);
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--background-color-80);
+}
+
+.dor-card img {
+  width: 100%;
+  max-height: 420px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.dor-card-body {
+  padding: .5rem 1rem 1rem;
+}
+
+.dor-card-body h3 {
+  color: var(--primary-color);
+  margin-bottom: .5rem;
+}
+
+.dor-card-body p {
+  margin-bottom: .5rem;
+}
+
+.dor-card-buttons {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.dor-card-buttons button {
+  fill: var(--foreground-color);
+}
+.dor-card-buttons button:hover {
+  fill: var(--primary-color);
+}
+
+.dor-card-buttons button.toggled-svg .void {
+  display: none;
+}
+.dor-card-buttons button:not(.toggled-svg) .filled {
+  display: none;
+}
+
+.dor-comment-section {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dor-comment-section .input-text {
+  width: 100%;
+}
+
+.dor-card-body .dor-card-date {
+  text-align: right;
+  color: #CCC;
+  margin-left: auto;
+}

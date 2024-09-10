@@ -14,6 +14,11 @@
   color: var(--background-color-80);
 }
 
+:focus-visible, 
+.focused {
+  --primary-color: var(--secondary-color);
+}
+
 body {
   min-height: 100vh;
   background-color: var(--background-color);
@@ -122,9 +127,17 @@ button svg {
   display: none !important;
 }
 
-input {
+input, 
+textarea {
   border: none;
   border-radius: 3px;
+}
+
+textarea {
+  font-family: inherit;
+  resize: none;
+  height: auto;
+  overflow: hidden;
 }
 
 fieldset {

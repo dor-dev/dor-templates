@@ -9,6 +9,8 @@ function shuffleArray(array) {
     [array[currentIndex], array[randomIndex]] = [
       array[randomIndex], array[currentIndex]];
   }
+
+  return array;
 }
 
 function shortenNumber(number) {
@@ -35,4 +37,12 @@ function formatNumber(number) {
   return myNumber.toLocaleString("es-ES", {
 
   });
+}
+
+function shortenDate(date) {
+  const myDate = new Date(date);
+  if (isNaN(myDate)) {
+    throw new Error("Couldn't process date");    
+  }
+  return myDate.toLocaleDateString();
 }

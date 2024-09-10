@@ -7,30 +7,34 @@ document.addEventListener("DOMContentLoaded", () => {
       ammount: i * 600, 
     };
   });
-  const barChart = new DorBarChart(barChartContainer, barChartItems);
+  const barChart = new DorBarChart(barChartContainer, barChartItems, true);
 });
 
 class DorBarChart {
   #domElement;
   #items;
 
-  constructor(domElement, items) {
+  constructor(domElement, items, demo) {
     this.#domElement = domElement;
-    this.#items = items;
+    this.#items = demo ? shuffleArray(items) : items;
     this.#assemble();
+  }
+
+  get maxAmmount() {
+    return Math.ceil(
+      [...this.#items].sort((a, b) => b.ammount - a.ammount)[0].ammount
+    );
   }
 
   #assemble() {
     this.#log();
-    const maxAmmount = Math.ceil(this.#items.sort((a, b) => b.ammount - a.ammount)[0].ammount);
-    shuffleArray(this.#items);
     this.#domElement.classList.add("dor-barchart");
     const htmlAsString = 
     `<div class="dor-barchart-grid" style="--grid-fractions: ${this.#items.length}">` +
     '<div class="dor-barchart-empty display-small"></div>' + 
     '<div class="dor-barchart-y dor-barchart-info">' + 
-    `<span>${shortenNumber(maxAmmount)}</span>` + 
-    `<span>${shortenNumber(maxAmmount / 2)}</span>` + 
+    `<span>${shortenNumber(this.maxAmmount)}</span>` + 
+    `<span>${shortenNumber(this.maxAmmount / 2)}</span>` + 
     `<span>${shortenNumber(0)}</span>` + 
     '</div>' + 
     `${this.#items.map(item => (
@@ -39,13 +43,13 @@ class DorBarChart {
       '</div>' + 
       `<div class="dor-barchart-item display-small" data-id="${item.id}">` + 
         `<div class="dor-barchart-column"` + 
-        `style="--column-size: ${getCurrentItemAmmount(item.ammount, maxAmmount)}%"></div>` + 
+        `style="--column-size: ${getCurrentItemAmmount(item.ammount, this.maxAmmount)}%"></div>` + 
       '</div>'
     )).join("")}` + 
     `${this.#items.map(item => (
       `<div class="dor-barchart-item display-big" data-id="${item.id}">` + 
         `<div class="dor-barchart-column"` + 
-        `style="--column-size: ${getCurrentItemAmmount(item.ammount, maxAmmount)}%"></div>` + 
+        `style="--column-size: ${getCurrentItemAmmount(item.ammount, this.maxAmmount)}%"></div>` + 
       '</div>'
     )).join("")}` + 
     '<div class="dor-barchart-empty display-big"></div>' + 

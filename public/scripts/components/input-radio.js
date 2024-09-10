@@ -12,9 +12,9 @@ document.querySelectorAll(".input-radio").forEach(inputContainer => {
     }
   });
   input.addEventListener("focus", function () {
-    inputContainer.classList.add("focused");
+    inputContainer.closest("fieldset").classList.add("focused");
   });
   input.addEventListener("blur", function () {
-    inputContainer.classList.remove("focused");
+    inputContainer.closest("fieldset").classList.remove("focused");
   });
 });

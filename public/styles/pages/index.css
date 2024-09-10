@@ -2,7 +2,7 @@ button {
   fill: var(--primary-color);
 }
 
-menu {
+menu li a {
   color: var(--primary-color);
 }
 

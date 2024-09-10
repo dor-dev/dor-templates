@@ -1,6 +1,5 @@
 .input-text {
-  height: 45px;
-  max-width: 250px;
+  min-height: 45px;
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -9,27 +8,48 @@
   color: var(--background-color-80);
 }
 
-.input-text.focused label {
+.input-text.has-value label {
   transform: scale(.75) translateY(-10px);
+}
+.input-text.has-value span {
+  transform: scale(.75) translateY(-10px);
+}
+
+.input-text span {
+  top: 12px;
+  right: 1rem;
+  position: absolute;
+  transition: transform .25s;
+  transform-origin: right top;
 }
 
 .input-text label {
   position: absolute;
   left: .75rem;
   transition: transform .25s;
-  transform-origin: 0 0;
+  transform-origin: left top;
 }
 
-.input-text input {
-  padding: 15px .75rem 0px;
-  height: 100%;
+.input-text:has(textarea) label {
+  top: 12px;
+}
+
+.input-text input,
+.input-text textarea {
+  padding: 15px .75rem 5px;
+  min-height: 45px;
   width: 100%;
   font-size: 16px;
   background-color: var(--primary-color);
   color: var(--background-color-80);
 }
 
-.input-text input::selection {
+.input-text textarea {
+  padding-top: 22px;
+}
+
+.input-text input::selection, 
+.input-text textarea::selection {
   background-color: var(--background-color-80);
   color: var(--primary-color);
 }

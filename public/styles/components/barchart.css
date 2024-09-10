@@ -9,7 +9,7 @@
   --grid-fractions: 1;
   gap: .5rem;
   display: grid;
-  height: 500px;
+  min-height: 500px;
   grid-template-rows: 1fr auto;
   grid-template-columns: auto repeat(var(--grid-fractions), 1fr);
   overflow: hidden;
