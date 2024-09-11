@@ -1,0 +1,66 @@
+.dor-table {
+  background-color: var(--border-color);
+  position: relative;
+}
+
+.dor-table-columns {
+  background-color: var(--background-color);
+  position: sticky;
+  top: 0;
+  left: 0;
+}
+.dor-table-columns .dor-table-cell {
+  background-color: var(--primary-color);
+  color: var(--background-color);
+}
+
+.dor-table-columns, 
+.dor-table-row {
+  flex-wrap: wrap;
+}
+
+.dor-table-columns, 
+.dor-table-rows, 
+.dor-table-row {
+  display: flex;
+  gap: 1px;
+}
+
+.dor-table-row {
+  border-bottom: 1px solid var(--primary-color);
+}
+
+.dor-table-rows {
+  flex-direction: column;
+}
+
+.dor-table-cell {
+  background-color: var(--background-color-80);
+  min-width: 100px;
+}
+.dor-table-cell p {
+  min-height: 24px;
+  align-content: center;
+}
+/* 
+  TODO : Leave alignment (?) 
+*/
+/* .dor-table-cell p.cell-right {
+  text-align: end;
+}
+.dor-table-cell p.cell-center {
+  text-align: center;
+}
+.dor-table-cell p.cell-left {
+  text-align: left;
+} */
+
+.dor-table-column {
+  background-color: var(--background-color-90);
+}
+
+.dor-table-cell {
+  padding: .5rem .75rem;
+  flex: 1 1 0px;
+  fill: var(--primary-color);
+}

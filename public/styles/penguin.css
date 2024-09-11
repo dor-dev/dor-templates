@@ -16,7 +16,8 @@
 
 :focus-visible, 
 .focused {
-  --primary-color: var(--secondary-color);
+  --primary-color: var(--secondary-color) !important;
+  fill: var(--primary-color) !important;
 }
 
 body {
@@ -28,7 +29,7 @@ body {
 header {
   position: relative;
   height: var(--header-height);
-  background-color: var(--background-color-90);
+  background-color: var(--background-color-80);
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -58,8 +59,11 @@ aside {
   position: relative;
   overflow: auto;
   overflow-x: hidden;
+  border: 1px solid var(--border-color);
+  border-top: none;
+  border-bottom: none;
   flex: 0 0 var(--aside-left-width);
-  background-color: var(--background-color-80);
+  background-color: var(--background-color-90);
   padding: 1rem;
   transition: flex-basis var(--toggling-duration) ease-out;
 }
@@ -119,7 +123,7 @@ button {
   overflow: hidden;
 }
 
-button svg {
+svg {
   vertical-align: middle;
 }
 
@@ -143,7 +147,7 @@ textarea {
 fieldset {
   padding: 1rem;
   border-radius: 5px;
-  border: 2px solid var(--background-color-90);
+  border: 2px solid var(--border-color-light);
   display: inline-block;
 }
 fieldset legend {

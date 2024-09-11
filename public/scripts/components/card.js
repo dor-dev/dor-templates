@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   for (let card of cards) {
     const cardContainer = document.createElement("div");
     cardGroupContainer.append(cardContainer);
-    const cardObject = new DorCard(cardContainer, card);
+    // const cardObject = new DorCard(cardContainer, card);
   }
 });
 
@@ -30,7 +30,7 @@ class DorCard {
   }
 
   #assemble() {
-    this.#log();
+    this.log();
     this.#domElement.classList.add("dor-card");
     const cardData = this.#data;
     let htmlAsString = 
@@ -157,8 +157,7 @@ class DorCard {
     });
   }
 
-  #log() {
-    console.log(this.#domElement);
-    console.log(this.#data);
+  log() {
+    console.log(this.#domElement, this.#data);
   }
 }

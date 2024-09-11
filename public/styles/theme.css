@@ -4,6 +4,9 @@ body {
   --background-color-90: #FFF;
   --background-color-80: #FFF;
 
+  --border-color: #EEE;
+  --border-color-light: #F4F4F4;
+
   --primary-color: #21b791;
   --secondary-color: #f04a79;
 }
@@ -11,8 +14,11 @@ body {
 body.dark {
   --foreground-color: #CCC;
   --background-color: #151618;
-  --background-color-90: #232528;
-  --background-color-80: #1e1f22;
+  --background-color-90: #1e1f22;
+  --background-color-80: #232528;
+
+  --border-color: #151618;
+  --border-color-light: #232528;
 
   --primary-color: #E3B459;
   --secondary-color: #32ca8a;

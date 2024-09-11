@@ -12,32 +12,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
 class DorBarChart {
   #domElement;
-  #items;
+  #data;
 
   constructor(domElement, items, demo) {
     this.#domElement = domElement;
-    this.#items = demo ? shuffleArray(items) : items;
+    this.#data = demo ? shuffleArray(items) : items;
     this.#assemble();
   }
 
   get maxAmmount() {
     return Math.ceil(
-      [...this.#items].sort((a, b) => b.ammount - a.ammount)[0].ammount
+      [...this.#data].sort((a, b) => b.ammount - a.ammount)[0].ammount
     );
   }
 
   #assemble() {
-    this.#log();
+    this.log();
     this.#domElement.classList.add("dor-barchart");
     const htmlAsString = 
-    `<div class="dor-barchart-grid" style="--grid-fractions: ${this.#items.length}">` +
+    `<div class="dor-barchart-grid" style="--grid-fractions: ${this.#data.length}">` +
     '<div class="dor-barchart-empty display-small"></div>' + 
     '<div class="dor-barchart-y dor-barchart-info">' + 
     `<span>${shortenNumber(this.maxAmmount)}</span>` + 
     `<span>${shortenNumber(this.maxAmmount / 2)}</span>` + 
     `<span>${shortenNumber(0)}</span>` + 
     '</div>' + 
-    `${this.#items.map(item => (
+    `${this.#data.map(item => (
       '<div class="dor-barchart-x dor-barchart-info display-small">' + 
         `<span title="${item.name}">${item.name}</span>` + 
       '</div>' + 
@@ -46,14 +46,14 @@ class DorBarChart {
         `style="--column-size: ${getCurrentItemAmmount(item.ammount, this.maxAmmount)}%"></div>` + 
       '</div>'
     )).join("")}` + 
-    `${this.#items.map(item => (
+    `${this.#data.map(item => (
       `<div class="dor-barchart-item display-big" data-id="${item.id}">` + 
         `<div class="dor-barchart-column"` + 
         `style="--column-size: ${getCurrentItemAmmount(item.ammount, this.maxAmmount)}%"></div>` + 
       '</div>'
     )).join("")}` + 
     '<div class="dor-barchart-empty display-big"></div>' + 
-    `${this.#items.map(item => (
+    `${this.#data.map(item => (
       '<div class="dor-barchart-x dor-barchart-info display-big">' + 
         `<span title="${item.name}">${item.name}</span>` + 
       '</div>'
@@ -90,7 +90,7 @@ class DorBarChart {
     
     barChartItems.forEach(item => {
       const itemId = item.getAttribute("data-id");
-      const itemData = this.#items.find(sourceItem => String(sourceItem.id) === itemId);
+      const itemData = this.#data.find(sourceItem => String(sourceItem.id) === itemId);
 
       if (itemData) {
         item.addEventListener("mouseenter", function () {
@@ -175,8 +175,7 @@ class DorBarChart {
     });
   }
 
-  #log() {
-    console.log(this.#domElement);
-    console.log(this.#items);
+  log() {
+    console.log(this.#domElement, this.#data);
   }
 }
