@@ -1,6 +1,55 @@
 .dor-table {
-  background-color: var(--border-color);
   position: relative;
+}
+
+.dor-table-body {
+  position: relative;
+  background-color: var(--border-color);
+}
+
+.dor-table-menu {
+  position: sticky;
+  padding: .5rem 0;
+  bottom: 0;
+  left: 0;
+  background-color: var(--background-color);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.dor-table-navigation, 
+.dor-table-navigation-pages {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.dor-table-navigation-pages {
+  justify-content: center;
+  gap: .25rem;
+}
+
+.dor-table-navigation button {
+  min-height: 24px;
+  font-size: 16px;
+}
+.dor-table-navigation-pages button { 
+  padding: 0 .5rem;
+}
+.dor-table-navigation button:disabled {
+  fill: var(--border-color-light);
+}
+.dor-table-navigation button.selected,
+.dor-table-navigation button:hover {
+  color: var(--primary-color);
+}
+
+.dor-table-menu select {
+  margin-left: auto;
 }
 
 .dor-table-columns {
@@ -56,7 +105,15 @@
 } */
 
 .dor-table-column {
+  display: flex;
   background-color: var(--background-color-90);
+  cursor: pointer;
+}
+.dor-table-column svg {
+  fill: var(--background-color-90);
+}
+.dor-table-column svg {
+  margin-left: auto;
 }
 
 .dor-table-cell {

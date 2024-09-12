@@ -31,9 +31,29 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 class DorTable {
+  #sorting = {
+    type: "DESC", 
+    field: null, 
+  }
+  #pagination = {
+    pageSize: 5, 
+    currentPageNumber: 1, 
+  }
   #domElement;
   #data;
   #fields;
+
+  get currentSorting() {
+    return this.#sorting;
+  }
+
+  get pagination() {
+    return this.#pagination;
+  }
+
+  get maxPageNumber() {
+    return Math.ceil(this.#data.length / this.#pagination.pageSize);
+  }
 
   constructor(domElement, data, fields) {
     this.#domElement = domElement;
@@ -47,16 +67,41 @@ class DorTable {
     this.log();
     this.#domElement.classList.add("dor-table");
 
+    this.loadHtml();
+  }
+
+  loadHtml(newData) {
+    console.log(this.#sorting, this.#pagination);
+    const currentSortingField = this.#sorting.field;
+    const currentSortingType = this.#sorting.type;
+    if (currentSortingField) {
+      if (currentSortingType === "DESC") {
+        this.#data.sort((a, b) => b[currentSortingField] > a[currentSortingField]);
+      }
+      if (currentSortingType === "ASC") {
+        this.#data.sort((a, b) => a[currentSortingField] > b[currentSortingField]);
+      }
+    }
+
+    const startIndex = (this.#pagination.currentPageNumber - 1) * this.pagination.pageSize;
+    const endIndex = this.#pagination.currentPageNumber * this.#pagination.pageSize;
+    const pageData = this.#data.slice(startIndex, endIndex);
+
+    const isLastPage = this.#pagination.currentPageNumber >= this.maxPageNumber;
+    const isFirstPage = this.#pagination.currentPageNumber <= 1;
+
     const htmlAsString = 
+    '<div class="dor-table-body">' + 
     '<div class="dor-table-columns">' + 
     this.#fields.map(field => (
       `<div class="dor-table-column dor-table-cell" data-column="${field.id}">` + 
         `<p class="cell-${getFieldAlignment(field.type)}">${field.label}</p>` + 
+        createCurrentSortIcon(this.#sorting, field.id) + 
       '</div>'
     )).join("") + 
     '</div>' + 
     '<div class="dor-table-rows">' + 
-    this.#data.map(item => (
+    (newData || pageData).map(item => (
       '<div class="dor-table-row">' + 
       this.#fields.map(field => (
         `<div class="dor-table-cell" data-column="${field.id}">` + 
@@ -65,9 +110,75 @@ class DorTable {
       )).join("") + 
       '</div>'
     )).join("") + 
+    '</div>' + 
+    '</div>' + 
+    '<div class="dor-table-menu">' + 
+      '<div class="dor-table-navigation">' + 
+        `<button ${isFirstPage ? "disabled" : ""}>` + 
+          '<svg xmlns="http://www.w3.org/2000/svg" height="34px" viewBox="0 -960 960 960" width="32px"><path d="M240-240v-480h80v480h-80Zm440 0L440-480l240-240 56 56-184 184 184 184-56 56Z"/></svg>' + 
+        '</button>' + 
+        `<button ${isFirstPage ? "disabled" : ""}>` + 
+          '<svg xmlns="http://www.w3.org/2000/svg" height="34px" viewBox="0 -960 960 960" width="32px"><path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/></svg>' + 
+        '</button>' + 
+        '<div class="dor-table-navigation-pages">' + 
+          createButtonPages(this.#pagination, this.maxPageNumber) + 
+        '</div>' + 
+        `<button ${isLastPage ? "disabled" : ""}>` + 
+          '<svg xmlns="http://www.w3.org/2000/svg" height="34px" viewBox="0 -960 960 960" width="32px"><path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/></svg>' + 
+        '</button>' + 
+        `<button ${isLastPage ? "disabled" : ""}>` + 
+          '<svg xmlns="http://www.w3.org/2000/svg" height="34px" viewBox="0 -960 960 960" width="32px"><path d="m280-240-56-56 184-184-184-184 56-56 240 240-240 240Zm360 0v-480h80v480h-80Z"/></svg>' + 
+        '</button>' + 
+        '<select>' + 
+          [5, 10, 20, 30, 50, 100].map(option => {
+            return `<option value="${option}" ${option === this.#pagination.pageSize ? `selected="selected"` : ""}>${option}</option>`
+          }).join("") + 
+        '</select>' + 
+      '</div>' + 
     '</div>';
 
     this.#domElement.innerHTML = htmlAsString;
+
+    this.#addEvents();
+
+    function createCurrentSortIcon(sortData, columnId) {
+      if (sortData.field && sortData.field === columnId) {
+        if (sortData.type === "DESC") {
+          return '<svg class="column-sort" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"/></svg>';
+        }
+        if (sortData.type === "ASC") {
+          return '<svg class="column-sort" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-528 296-344l-56-56 240-240 240 240-56 56-184-184Z"/></svg>';
+        }
+        return "";
+      }
+      return "";
+    }
+
+    function createButtonPages(paginationData, maxPageNumber) {
+      let pagesHtml = "";
+      const pages = [];
+      const maxPageTracking = 3;
+      const currentPage = paginationData.currentPageNumber;
+
+      for (let i = currentPage - 1; i >= currentPage - maxPageTracking; i--) {
+        if (i <= 0) break;
+        pages.unshift(i);
+      }
+      
+      pages.push(currentPage);
+
+      for (let i = currentPage + 1; i <= currentPage + maxPageTracking; i++) {
+        if (i > maxPageNumber) break;
+        pages.push(i);
+      }
+
+      for (let page of pages) {
+        pagesHtml += 
+        `<button ${page === currentPage ? `class="selected"` : ""}>${page}</button>`;
+      }
+
+      return pagesHtml;
+    }
 
     function getFieldAlignment(type) {
       if (["date", "number"].includes(type)) {
@@ -111,8 +222,90 @@ class DorTable {
           '</p>'
         )
       }
-      
     }
+  }
+
+  #addEvents() {
+    const domElement = this.#domElement;
+    domElement.querySelectorAll(".dor-table-column").forEach(column => {
+      column.addEventListener("click", () => {
+        const currentColumnId = column.getAttribute("data-column");
+
+        if (this.#sorting.field === currentColumnId) {
+          const currentSorting = this.#sorting.type;
+          if (currentSorting === "DESC") {
+            this.#sorting.type = "ASC";
+          } else if (currentSorting === "ASC") {
+            this.#sorting.type = "DESC";
+          }
+        } else {
+          this.#sorting = {
+            field: currentColumnId, 
+            type: "DESC", 
+          };
+        }
+
+        this.loadHtml();
+      });
+    });
+
+    const pageSelect = this.#domElement.querySelector(".dor-table-menu select");
+    pageSelect.addEventListener("change", (ev) => {
+      this.#pagination.pageSize = Number(ev.target.value);
+      if (this.#pagination.currentPageNumber > this.maxPageNumber) {
+        this.#pagination.currentPageNumber = this.maxPageNumber;
+      }
+
+      this.loadHtml();
+    });
+
+    const navigation = this.#domElement.querySelector(".dor-table-navigation");
+
+    const pages = navigation.querySelectorAll(".dor-table-navigation-pages button");
+
+    pages.forEach(page => {
+      page.addEventListener("click", () => {
+        const newPage = Number(page.textContent);
+        if (this.#pagination.currentPageNumber === newPage) {
+          return;
+        }
+        this.#pagination.currentPageNumber = newPage;
+        this.loadHtml();
+      });
+    });
+
+    const firstPageButton = navigation.querySelector(":scope > button:nth-of-type(1)");
+    firstPageButton.addEventListener("click", () => {
+      if (this.#pagination.currentPageNumber === 1) {
+        return;
+      }
+      this.#pagination.currentPageNumber = 1;
+      this.loadHtml();
+    });
+    const previousPageButton = navigation.querySelector(":scope > button:nth-of-type(2)");
+    previousPageButton.addEventListener("click", () => {
+      if (this.#pagination.currentPageNumber === 1) {
+        return;
+      }
+      this.#pagination.currentPageNumber--;
+      this.loadHtml();
+    });
+    const nextPageButton = navigation.querySelector(":scope> button:nth-of-type(3)");
+    nextPageButton.addEventListener("click", () => {
+      if (this.#pagination.currentPageNumber === this.maxPageNumber) {
+        return;
+      }
+      this.#pagination.currentPageNumber++;
+      this.loadHtml();
+    });
+    const lastPageButton = navigation.querySelector(":scope > button:nth-of-type(4)");
+    lastPageButton.addEventListener("click", () => {
+      if (this.#pagination.currentPageNumber === this.maxPageNumber) {
+        return;
+      }
+      this.#pagination.currentPageNumber = this.maxPageNumber;
+      this.loadHtml();
+    });
   }
 
   log() {

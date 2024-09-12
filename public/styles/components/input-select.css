@@ -1,0 +1,6 @@
+select {
+  padding: .5rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--background-color-80);
+  color: var(--foreground-color);
+}

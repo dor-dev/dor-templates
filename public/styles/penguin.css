@@ -122,6 +122,9 @@ button {
   cursor: pointer;
   overflow: hidden;
 }
+button:disabled {
+  cursor: default;
+}
 
 svg {
   vertical-align: middle;
