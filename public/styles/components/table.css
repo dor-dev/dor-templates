@@ -105,15 +105,29 @@
 } */
 
 .dor-table-column {
+  position: relative;
   display: flex;
   background-color: var(--background-color-90);
   cursor: pointer;
+  gap: .25rem;
 }
 .dor-table-column svg {
   fill: var(--background-color-90);
 }
-.dor-table-column svg {
-  margin-left: auto;
+.dor-table-column p {
+  margin-right: auto;
+}
+.dor-table-column .column-filter {
+  padding: .25rem;
+}
+.dor-table-column .dor-popup {
+  color: var(--foreground-color);
+  top: 100%;
+  bottom: initial;  
+  left: 0;
+  right: initial;
+  min-width: calc(100% - 1rem);
+  margin: .5rem;
 }
 
 .dor-table-cell {

@@ -97,6 +97,9 @@ class DorTable {
       `<div class="dor-table-column dor-table-cell" data-column="${field.id}">` + 
         `<p class="cell-${getFieldAlignment(field.type)}">${field.label}</p>` + 
         createCurrentSortIcon(this.#sorting, field.id) + 
+        '<button class="column-filter">' + 
+          '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"><path d="M440-160q-17 0-28.5-11.5T400-200v-240L168-736q-15-20-4.5-42t36.5-22h560q26 0 36.5 22t-4.5 42L560-440v240q0 17-11.5 28.5T520-160h-80Zm40-308 198-252H282l198 252Zm0 0Z"/></svg>' + 
+        '</button>' + 
       '</div>'
     )).join("") + 
     '</div>' + 
@@ -227,10 +230,40 @@ class DorTable {
 
   #addEvents() {
     const domElement = this.#domElement;
-    domElement.querySelectorAll(".dor-table-column").forEach(column => {
-      column.addEventListener("click", () => {
-        const currentColumnId = column.getAttribute("data-column");
+    const tableColumns = domElement.querySelectorAll(".dor-table-column");
+    tableColumns.forEach(column => {
+      const currentColumnId = column.getAttribute("data-column");
 
+      column.querySelector(".column-filter").addEventListener("click", (ev) => {
+        ev.stopPropagation();
+
+        document.querySelectorAll(".dor-popup").forEach(popup => {
+          popup.remove();
+        });
+
+        if (column.classList.contains("selected")) {
+          column.classList.remove("selected");
+          return; 
+        }
+
+        tableColumns.forEach(otherColumn => {
+          otherColumn.classList.remove("selected");
+        })
+        column.classList.add("selected");
+
+        const newPopup = document.createElement("div");
+        newPopup.classList.add("dor-popup");
+
+        // TODO : Generar html para el popup de filtrado.
+        const popupHtml = 
+        '<p>TODO: Generar HTML para esta sección.</p>';
+
+        newPopup.innerHTML = popupHtml;
+
+        column.append(newPopup);
+      });
+
+      column.addEventListener("click", () => {
         if (this.#sorting.field === currentColumnId) {
           const currentSorting = this.#sorting.type;
           if (currentSorting === "DESC") {

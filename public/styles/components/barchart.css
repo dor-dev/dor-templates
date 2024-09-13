@@ -44,7 +44,7 @@
   height: var(--column-size);
 }
 
-.dor-barchart-item.selected .dor-barchart-column {
+.dor-barchart-item:has(.dor-popup) .dor-barchart-column {
   background-color: var(--secondary-color);
 }
 
