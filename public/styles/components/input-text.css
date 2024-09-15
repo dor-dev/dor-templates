@@ -1,4 +1,4 @@
-.input-text {
+.dor-input-text {
   min-height: 45px;
   position: relative;
   display: inline-flex;
@@ -8,14 +8,13 @@
   color: var(--background-color-80);
 }
 
-.input-text.has-value label {
-  transform: scale(.75) translateY(-10px);
-}
-.input-text.has-value span {
+.dor-input-text.has-value label, 
+.dor-input-text.has-value span, 
+.dor-input-text:has(input[type="date"]) label {
   transform: scale(.75) translateY(-10px);
 }
 
-.input-text span {
+.dor-input-text span {
   top: 12px;
   right: 1rem;
   position: absolute;
@@ -24,7 +23,7 @@
   pointer-events: none;
 }
 
-.input-text label {
+.dor-input-text label {
   position: absolute;
   left: .75rem;
   transition: transform .25s;
@@ -32,12 +31,12 @@
   pointer-events: none;
 }
 
-.input-text:has(textarea) label {
+.dor-input-text:has(textarea) label {
   top: 12px;
 }
 
-.input-text input,
-.input-text textarea {
+.dor-input-text input,
+.dor-input-text textarea {
   padding: 15px .75rem 0px;
   min-height: 45px;
   width: 100%;
@@ -46,13 +45,13 @@
   color: var(--background-color-80);
 }
 
-.input-text textarea {
+.dor-input-text textarea {
   padding-top: 22px;
   padding-bottom: 5px;
 }
 
-.input-text input::selection, 
-.input-text textarea::selection {
+.dor-input-text input::selection, 
+.dor-input-text textarea::selection {
   background-color: var(--background-color-80);
   color: var(--primary-color);
 }

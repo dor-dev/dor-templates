@@ -34,11 +34,12 @@ class DorTable {
   #sorting = {
     type: "DESC", 
     field: null, 
-  }
+  };
+  #filtering = {};
   #pagination = {
     pageSize: 5, 
     currentPageNumber: 1, 
-  }
+  };
   #domElement;
   #data;
   #fields;
@@ -71,7 +72,7 @@ class DorTable {
   }
 
   loadHtml(newData) {
-    console.log(this.#sorting, this.#pagination);
+    console.log(this.#sorting, this.#filtering, this.#pagination);
     const currentSortingField = this.#sorting.field;
     const currentSortingType = this.#sorting.type;
     if (currentSortingField) {
@@ -95,7 +96,7 @@ class DorTable {
     '<div class="dor-table-columns">' + 
     this.#fields.map(field => (
       `<div class="dor-table-column dor-table-cell" data-column="${field.id}">` + 
-        `<p class="cell-${getFieldAlignment(field.type)}">${field.label}</p>` + 
+        `<p title="${field.label}" class="cell-${getFieldAlignment(field.type)}">${field.label}</p>` + 
         createCurrentSortIcon(this.#sorting, field.id) + 
         '<button class="column-filter">' + 
           '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"><path d="M440-160q-17 0-28.5-11.5T400-200v-240L168-736q-15-20-4.5-42t36.5-22h560q26 0 36.5 22t-4.5 42L560-440v240q0 17-11.5 28.5T520-160h-80Zm40-308 198-252H282l198 252Zm0 0Z"/></svg>' + 
@@ -132,6 +133,7 @@ class DorTable {
         `<button ${isLastPage ? "disabled" : ""}>` + 
           '<svg xmlns="http://www.w3.org/2000/svg" height="34px" viewBox="0 -960 960 960" width="32px"><path d="m280-240-56-56 184-184-184-184 56-56 240 240-240 240Zm360 0v-480h80v480h-80Z"/></svg>' + 
         '</button>' + 
+        `<p>${startIndex + 1} - ${endIndex} / ${this.#data.length}</p>` + 
         '<select>' + 
           [5, 10, 20, 30, 50, 100].map(option => {
             return `<option value="${option}" ${option === this.#pagination.pageSize ? `selected="selected"` : ""}>${option}</option>`
@@ -237,28 +239,89 @@ class DorTable {
       column.querySelector(".column-filter").addEventListener("click", (ev) => {
         ev.stopPropagation();
 
+        const columnHasPopup = column.querySelector(".dor-popup");
+
         document.querySelectorAll(".dor-popup").forEach(popup => {
           popup.remove();
         });
 
-        if (column.classList.contains("selected")) {
-          column.classList.remove("selected");
-          return; 
+        if (columnHasPopup) {
+          return;
         }
-
-        tableColumns.forEach(otherColumn => {
-          otherColumn.classList.remove("selected");
-        })
-        column.classList.add("selected");
 
         const newPopup = document.createElement("div");
         newPopup.classList.add("dor-popup");
 
-        // TODO : Generar html para el popup de filtrado.
+        const columnData = this.#fields.find(field => field.id === currentColumnId);
+        const fieldType = columnData.type;
+        
         const popupHtml = 
-        '<p>TODO: Generar HTML para esta sección.</p>';
+        '<form>' + 
+        `<h3>${columnData.label}</h3>` + 
+        (fieldType === "string" ? '<div class="filter-contains"></div>' : '') + 
+        '<div class="filter-equals"></div>' + 
+        (fieldType !== "string" && fieldType !== "boolean" ? '<div class="filter-from"></div>' : '') + 
+        (fieldType !== "string" && fieldType !== "boolean" ? '<div class="filter-to"></div>' : '') + 
+        '<button type="reset">Reset</button>' + 
+        '<button type="submit">Filter</button>' + 
+        '</form>';
 
         newPopup.innerHTML = popupHtml;
+
+        if (fieldType === "string") {
+          new DorInputText(newPopup.querySelector("div.filter-contains"), {
+            id: "filter-contains", 
+            label: "Contains", 
+            value: this.#filtering[currentColumnId]?.contains, 
+          });
+        }
+
+        new DorInputText(newPopup.querySelector("div.filter-equals"), {
+          id: "filter-equals", 
+          label: "Equals", 
+          type: fieldType === "string" ? "text" : fieldType, 
+          value: this.#filtering[currentColumnId]?.equals, 
+        });
+
+        if (fieldType !== "string" && fieldType !== "boolean") {
+          new DorInputText(newPopup.querySelector("div.filter-from"), {
+            id: "filter-from", 
+            label: "From", 
+            type: fieldType, 
+            value: this.#filtering[currentColumnId]?.from, 
+          });
+          new DorInputText(newPopup.querySelector("div.filter-to"), {
+            id: "filter-to", 
+            label: "To", 
+            type: fieldType, 
+            value: this.#filtering[currentColumnId]?.to, 
+          });
+        }
+
+        newPopup.querySelector('button[type="reset"]').addEventListener("click", (ev) => {
+          delete this.#filtering[currentColumnId];
+
+          this.loadHtml();
+        });
+
+        newPopup.querySelector("form").addEventListener("submit", (ev) => {
+          ev.preventDefault();
+
+          const formData = new FormData(ev.target);
+
+          this.#filtering[currentColumnId] = {
+            from: formData.get("filter-from"), 
+            to: formData.get("filter-to"), 
+            contains: formData.get("filter-contains"), 
+            equals: formData.get("filter-equals"), 
+          };
+
+          this.loadHtml();
+        });
+
+        newPopup.addEventListener("click", function (ev) {
+          ev.stopPropagation();
+        });
 
         column.append(newPopup);
       });

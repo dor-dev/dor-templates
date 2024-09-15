@@ -162,6 +162,20 @@ b {
   color: var(--primary-color);
 }
 
+form h2, 
+form h3 {
+  color: var(--primary-color);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 @media (max-width: 800px) {
   aside {
     position: absolute;
