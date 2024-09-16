@@ -95,10 +95,13 @@ class DorTable {
     '<div class="dor-table-body">' + 
     '<div class="dor-table-columns">' + 
     this.#fields.map(field => (
-      `<div class="dor-table-column dor-table-cell" data-column="${field.id}">` + 
-        `<p title="${field.label}" class="cell-${getFieldAlignment(field.type)}">${field.label}</p>` + 
-        createCurrentSortIcon(this.#sorting, field.id) + 
-        '<button class="column-filter">' + 
+      `<div title="${field.label}" class="dor-table-column dor-table-cell ${field.hidden ? 'minimized' : ''}" data-column="${field.id}">` + 
+        '<button class="column-visibility">' + 
+          createCurrentToggleIcon(field.hidden) + 
+        '</button>' + 
+        `<p class="cell-${getFieldAlignment(field.type)}">${field.label}</p>` + 
+          createCurrentSortIcon(this.#sorting, field.id) + 
+        '<button title="Filter column" class="column-filter">' + 
           '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"><path d="M440-160q-17 0-28.5-11.5T400-200v-240L168-736q-15-20-4.5-42t36.5-22h560q26 0 36.5 22t-4.5 42L560-440v240q0 17-11.5 28.5T520-160h-80Zm40-308 198-252H282l198 252Zm0 0Z"/></svg>' + 
         '</button>' + 
       '</div>'
@@ -108,7 +111,7 @@ class DorTable {
     (newData || pageData).map(item => (
       '<div class="dor-table-row">' + 
       this.#fields.map(field => (
-        `<div class="dor-table-cell" data-column="${field.id}">` + 
+        `<div class="dor-table-cell ${field.hidden ? 'minimized' : ''}" data-column="${field.id}">` + 
           displayItemField(item, field) + 
         '</div>'
       )).join("") + 
@@ -119,32 +122,41 @@ class DorTable {
     '<div class="dor-table-menu">' + 
       '<div class="dor-table-navigation">' + 
         `<button ${isFirstPage ? "disabled" : ""}>` + 
-          '<svg xmlns="http://www.w3.org/2000/svg" height="34px" viewBox="0 -960 960 960" width="32px"><path d="M240-240v-480h80v480h-80Zm440 0L440-480l240-240 56 56-184 184 184 184-56 56Z"/></svg>' + 
+          '<svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"><path d="M240-240v-480h80v480h-80Zm440 0L440-480l240-240 56 56-184 184 184 184-56 56Z"/></svg>' + 
         '</button>' + 
         `<button ${isFirstPage ? "disabled" : ""}>` + 
-          '<svg xmlns="http://www.w3.org/2000/svg" height="34px" viewBox="0 -960 960 960" width="32px"><path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/></svg>' + 
+          '<svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"><path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/></svg>' + 
         '</button>' + 
         '<div class="dor-table-navigation-pages">' + 
           createButtonPages(this.#pagination, this.maxPageNumber) + 
         '</div>' + 
         `<button ${isLastPage ? "disabled" : ""}>` + 
-          '<svg xmlns="http://www.w3.org/2000/svg" height="34px" viewBox="0 -960 960 960" width="32px"><path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/></svg>' + 
+          '<svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"><path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/></svg>' + 
         '</button>' + 
         `<button ${isLastPage ? "disabled" : ""}>` + 
-          '<svg xmlns="http://www.w3.org/2000/svg" height="34px" viewBox="0 -960 960 960" width="32px"><path d="m280-240-56-56 184-184-184-184 56-56 240 240-240 240Zm360 0v-480h80v480h-80Z"/></svg>' + 
+          '<svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"><path d="m280-240-56-56 184-184-184-184 56-56 240 240-240 240Zm360 0v-480h80v480h-80Z"/></svg>' + 
         '</button>' + 
+      '</div>' + 
+      '<div class="dor-table-options">' + 
         `<p>${startIndex + 1} - ${endIndex} / ${this.#data.length}</p>` + 
-        '<select>' + 
-          [5, 10, 20, 30, 50, 100].map(option => {
-            return `<option value="${option}" ${option === this.#pagination.pageSize ? `selected="selected"` : ""}>${option}</option>`
-          }).join("") + 
-        '</select>' + 
+          '<select>' + 
+            [5, 10, 20, 30, 50, 100].map(option => {
+              return `<option value="${option}" ${option === this.#pagination.pageSize ? `selected="selected"` : ""}>${option}</option>`
+            }).join("") + 
+          '</select>' + 
       '</div>' + 
     '</div>';
 
     this.#domElement.innerHTML = htmlAsString;
 
     this.#addEvents();
+
+    function createCurrentToggleIcon(hidden) {
+      if (hidden === true) {
+        return '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/></svg>';
+      }
+      return '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"><path d="M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z"/></svg>';
+    }
 
     function createCurrentSortIcon(sortData, columnId) {
       if (sortData.field && sortData.field === columnId) {
@@ -162,7 +174,7 @@ class DorTable {
     function createButtonPages(paginationData, maxPageNumber) {
       let pagesHtml = "";
       const pages = [];
-      const maxPageTracking = 3;
+      const maxPageTracking = 2;
       const currentPage = paginationData.currentPageNumber;
 
       for (let i = currentPage - 1; i >= currentPage - maxPageTracking; i--) {
@@ -235,6 +247,22 @@ class DorTable {
     const tableColumns = domElement.querySelectorAll(".dor-table-column");
     tableColumns.forEach(column => {
       const currentColumnId = column.getAttribute("data-column");
+      const columnData = this.#fields.find(field => field.id === currentColumnId);
+        
+      column.querySelector(".column-visibility").addEventListener("click", (ev) => {
+        ev.stopPropagation();
+
+        const minimizedColumns = this.#domElement.querySelectorAll(".dor-table-column.minimized");
+        const isOffLimit = minimizedColumns.length < this.#fields.length - 1;
+        const isToggled = column.classList.contains("minimized");
+        const canToggle = isOffLimit || isToggled;
+
+        if (canToggle) {
+          columnData.hidden = !columnData.hidden;
+        }
+
+        this.loadHtml();
+      });
 
       column.querySelector(".column-filter").addEventListener("click", (ev) => {
         ev.stopPropagation();
@@ -252,7 +280,6 @@ class DorTable {
         const newPopup = document.createElement("div");
         newPopup.classList.add("dor-popup");
 
-        const columnData = this.#fields.find(field => field.id === currentColumnId);
         const fieldType = columnData.type;
         
         const popupHtml = 
@@ -345,7 +372,7 @@ class DorTable {
       });
     });
 
-    const pageSelect = this.#domElement.querySelector(".dor-table-menu select");
+    const pageSelect = this.#domElement.querySelector(".dor-table-options select");
     pageSelect.addEventListener("change", (ev) => {
       this.#pagination.pageSize = Number(ev.target.value);
       if (this.#pagination.currentPageNumber > this.maxPageNumber) {
