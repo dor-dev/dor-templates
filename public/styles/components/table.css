@@ -21,6 +21,10 @@
   z-index: 15;
 }
 
+.dor-table-menu * {
+  font-family: monospace;
+}
+
 .dor-table-navigation, 
 .dor-table-navigation-pages, 
 .dor-table-options {
@@ -33,9 +37,7 @@
 .dor-table-options {
   flex: 0 0 auto;
   gap: 1rem;
-}
-.dor-table-options :last-child {
-  margin-left: auto;
+  justify-content: flex-end;
 }
 
 .dor-table-navigation-pages {
@@ -64,10 +66,6 @@
 .dor-table-navigation button.selected,
 .dor-table-navigation button:hover {
   color: var(--primary-color);
-}
-
-.dor-table-menu select {
-  margin-left: auto;
 }
 
 .dor-table-columns {

@@ -71,7 +71,7 @@ class DorTable {
     this.loadHtml();
   }
 
-  loadHtml(newData) {
+  loadHtml() {
     console.log(this.#sorting, this.#filtering, this.#pagination);
     const currentSortingField = this.#sorting.field;
     const currentSortingType = this.#sorting.type;
@@ -86,9 +86,38 @@ class DorTable {
 
     const startIndex = (this.#pagination.currentPageNumber - 1) * this.pagination.pageSize;
     const endIndex = this.#pagination.currentPageNumber * this.#pagination.pageSize;
-    const pageData = this.#data.slice(startIndex, endIndex);
+    
+    const filteredData = this.#data.filter(item => {
+      let isIncluded = true;
+      Object.entries(this.#filtering).forEach(([key, value]) => {
+        if (value.from && item[key] < value.from) {
+          isIncluded = false;
+          return;
+        }
+        if (value.to && item[key] > value.to) {
+          isIncluded = false;
+          return;
+        }
+        if (value.contains && !String(item[key]).includes(value.contains)) {
+          isIncluded = false;
+          return;
+        }
+        if (value.equals && String(item[key]) !== String(value.equals)) {
+          isIncluded = false;
+          return;
+        }
+      });
+      return isIncluded;
+    });
 
-    const isLastPage = this.#pagination.currentPageNumber >= this.maxPageNumber;
+    const pageData = filteredData.slice(startIndex, endIndex);
+
+    const maxPageSize = filteredData.length;
+    const stringPadding = String(maxPageSize).length;
+
+    const isLastPage = 
+      filteredData.length === 0 || 
+      this.#pagination.currentPageNumber >= this.maxPageNumber;
     const isFirstPage = this.#pagination.currentPageNumber <= 1;
 
     const htmlAsString = 
@@ -102,13 +131,13 @@ class DorTable {
         `<p class="cell-${getFieldAlignment(field.type)}">${field.label}</p>` + 
           createCurrentSortIcon(this.#sorting, field.id) + 
         '<button title="Filter column" class="column-filter">' + 
-          '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"><path d="M440-160q-17 0-28.5-11.5T400-200v-240L168-736q-15-20-4.5-42t36.5-22h560q26 0 36.5 22t-4.5 42L560-440v240q0 17-11.5 28.5T520-160h-80Zm40-308 198-252H282l198 252Zm0 0Z"/></svg>' + 
+          createCurrentFilterIcon(this.#filtering, field.id) + 
         '</button>' + 
       '</div>'
     )).join("") + 
     '</div>' + 
     '<div class="dor-table-rows">' + 
-    (newData || pageData).map(item => (
+    (pageData).map(item => (
       '<div class="dor-table-row">' + 
       this.#fields.map(field => (
         `<div class="dor-table-cell ${field.hidden ? 'minimized' : ''}" data-column="${field.id}">` + 
@@ -138,12 +167,16 @@ class DorTable {
         '</button>' + 
       '</div>' + 
       '<div class="dor-table-options">' + 
-        `<p>${startIndex + 1} - ${endIndex} / ${this.#data.length}</p>` + 
-          '<select>' + 
-            [5, 10, 20, 30, 50, 100].map(option => {
-              return `<option value="${option}" ${option === this.#pagination.pageSize ? `selected="selected"` : ""}>${option}</option>`
-            }).join("") + 
-          '</select>' + 
+        '<p>' + 
+          `${String(startIndex + 1).padStart(stringPadding, "0")} - ` + 
+          `${String(endIndex).padStart(stringPadding, "0")} / ` + 
+          `${maxPageSize}` + 
+        '</p>' + 
+        '<select>' + 
+          [5, 10, 20, 30, 50, 100].map(option => {
+            return `<option value="${option}" ${option === this.#pagination.pageSize ? `selected="selected"` : ""}>${option}</option>`
+          }).join("") + 
+        '</select>' + 
       '</div>' + 
     '</div>';
 
@@ -169,6 +202,13 @@ class DorTable {
         return "";
       }
       return "";
+    }
+
+    function createCurrentFilterIcon(filterData, columnId) {
+      if (filterData[columnId]) {
+        return '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"><path d="M440-160q-17 0-28.5-11.5T400-200v-240L168-736q-15-20-4.5-42t36.5-22h560q26 0 36.5 22t-4.5 42L560-440v240q0 17-11.5 28.5T520-160h-80Z"/></svg>';
+      }
+      return '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px"><path d="M440-160q-17 0-28.5-11.5T400-200v-240L168-736q-15-20-4.5-42t36.5-22h560q26 0 36.5 22t-4.5 42L560-440v240q0 17-11.5 28.5T520-160h-80Zm40-308 198-252H282l198 252Zm0 0Z"/></svg>';
     }
 
     function createButtonPages(paginationData, maxPageNumber) {
@@ -336,13 +376,21 @@ class DorTable {
 
           const formData = new FormData(ev.target);
 
-          this.#filtering[currentColumnId] = {
-            from: formData.get("filter-from"), 
-            to: formData.get("filter-to"), 
-            contains: formData.get("filter-contains"), 
-            equals: formData.get("filter-equals"), 
-          };
-
+          if (Array.from(formData.entries()).some(([key, value]) => 
+            value !== null && 
+            value !== undefined && 
+            value !== "")
+          ) {
+            this.#filtering[currentColumnId] = {
+              from: formData.get("filter-from"), 
+              to: formData.get("filter-to"), 
+              contains: formData.get("filter-contains"), 
+              equals: formData.get("filter-equals"), 
+            };
+          } else {
+            delete this.#filtering[currentColumnId];
+          }
+          
           this.loadHtml();
         });
 
