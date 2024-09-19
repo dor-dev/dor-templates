@@ -11,4 +11,10 @@
   background-color: var(--background-color-80);
 
   z-index: 99;
+
+  transition: opacity .25s;
+}
+
+.dor-popup.fading {
+  opacity: 0;
 }

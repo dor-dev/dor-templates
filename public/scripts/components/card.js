@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   for (let card of cards) {
     const cardContainer = document.createElement("div");
     cardGroupContainer.append(cardContainer);
-    // const cardObject = new DorCard(cardContainer, card);
+    const cardObject = new DorCard(cardContainer, card);
   }
 });
 

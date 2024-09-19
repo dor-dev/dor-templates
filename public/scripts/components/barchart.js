@@ -80,12 +80,6 @@ class DorBarChart {
       barChartItems.forEach(item => {
         item.classList.remove("selected");
       });
-      const popups = document.querySelectorAll(".dor-popup");
-      if (popups.length !== 0) {
-        popups.forEach(popup => {
-          popup.remove();
-        });
-      }
     });
     
     barChartItems.forEach(item => {
