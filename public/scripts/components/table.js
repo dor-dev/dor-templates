@@ -42,6 +42,7 @@ class DorTable {
   };
   #domElement;
   #data;
+  #filteredData;
   #fields;
 
   get currentSorting() {
@@ -52,8 +53,13 @@ class DorTable {
     return this.#pagination;
   }
 
-  get maxPageNumber() {
-    return Math.ceil(this.#data.length / this.#pagination.pageSize);
+  get maxPageSize() {
+    const calculatedSize = Math.ceil(this.#filteredData.length / this.#pagination.pageSize);
+    if (calculatedSize <= 0) {
+      return 1;
+    } else {
+      return calculatedSize;
+    }
   }
 
   constructor(domElement, data, fields) {
@@ -87,7 +93,7 @@ class DorTable {
     const startIndex = (this.#pagination.currentPageNumber - 1) * this.pagination.pageSize;
     const endIndex = this.#pagination.currentPageNumber * this.#pagination.pageSize;
     
-    const filteredData = this.#data.filter(item => {
+    this.#filteredData = this.#data.filter(item => {
       let isIncluded = true;
       Object.entries(this.#filtering).forEach(([key, value]) => {
         if (value.from && item[key] < value.from) {
@@ -110,14 +116,11 @@ class DorTable {
       return isIncluded;
     });
 
-    const pageData = filteredData.slice(startIndex, endIndex);
+    const pageData = this.#filteredData.slice(startIndex, endIndex);
 
-    const maxPageSize = filteredData.length;
-    const stringPadding = String(maxPageSize).length;
+    const stringPadding = String(this.#data.length).length;
 
-    const isLastPage = 
-      filteredData.length === 0 || 
-      this.#pagination.currentPageNumber >= this.maxPageNumber;
+    const isLastPage = this.#pagination.currentPageNumber >= this.maxPageSize;
     const isFirstPage = this.#pagination.currentPageNumber <= 1;
 
     const htmlAsString = 
@@ -157,7 +160,7 @@ class DorTable {
           '<svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"><path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/></svg>' + 
         '</button>' + 
         '<div class="dor-table-navigation-pages">' + 
-          createButtonPages(this.#pagination, this.maxPageNumber) + 
+          createButtonPages(this.#pagination, this.maxPageSize) + 
         '</div>' + 
         `<button ${isLastPage ? "disabled" : ""}>` + 
           '<svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px"><path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/></svg>' + 
@@ -170,7 +173,7 @@ class DorTable {
         '<p>' + 
           `${String(startIndex + 1).padStart(stringPadding, "0")} - ` + 
           `${String(endIndex).padStart(stringPadding, "0")} / ` + 
-          `${maxPageSize}` + 
+          `${this.#filteredData.length}` + 
         '</p>' + 
         '<select>' + 
           [5, 10, 20, 30, 50, 100].map(option => {
@@ -423,8 +426,8 @@ class DorTable {
     const pageSelect = this.#domElement.querySelector(".dor-table-options select");
     pageSelect.addEventListener("change", (ev) => {
       this.#pagination.pageSize = Number(ev.target.value);
-      if (this.#pagination.currentPageNumber > this.maxPageNumber) {
-        this.#pagination.currentPageNumber = this.maxPageNumber;
+      if (this.#pagination.currentPageNumber > this.maxPageSize) {
+        this.#pagination.currentPageNumber = this.maxPageSize;
       }
 
       this.loadHtml();
@@ -463,7 +466,7 @@ class DorTable {
     });
     const nextPageButton = navigation.querySelector(":scope> button:nth-of-type(3)");
     nextPageButton.addEventListener("click", () => {
-      if (this.#pagination.currentPageNumber === this.maxPageNumber) {
+      if (this.#pagination.currentPageNumber === this.maxPageSize) {
         return;
       }
       this.#pagination.currentPageNumber++;
@@ -471,10 +474,10 @@ class DorTable {
     });
     const lastPageButton = navigation.querySelector(":scope > button:nth-of-type(4)");
     lastPageButton.addEventListener("click", () => {
-      if (this.#pagination.currentPageNumber === this.maxPageNumber) {
+      if (this.#pagination.currentPageNumber === this.maxPageSize) {
         return;
       }
-      this.#pagination.currentPageNumber = this.maxPageNumber;
+      this.#pagination.currentPageNumber = this.maxPageSize;
       this.loadHtml();
     });
   }

@@ -68,9 +68,9 @@ class DorCard {
 
     htmlAsString += 
     '<div class="dor-comment-section hidden" style="margin-top: 1rem;">' + 
-      '<div class="input-text">' + 
+      '<div class="dor-input-text">' + 
         '<span>0 / 200</span>' + 
-        '<label for="comment">Add a comment.</label>' + 
+        '<label for="comment">Leave a comment...</label>' + 
         '<textarea rows="1" maxlength="200" name="comment" id="comment"></textarea>' + 
       '</div>' + 
       '<button>' + 
@@ -111,7 +111,7 @@ class DorCard {
       commentSection.classList.toggle("hidden");
     });
 
-    const textareaContainer = commentSection.querySelector(".input-text");
+    const textareaContainer = commentSection.querySelector(".dor-input-text");
     const commentTextarea = textareaContainer.querySelector("textarea");
     const characterTrack = textareaContainer.querySelector("span");
     if (commentTextarea.value) {
