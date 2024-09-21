@@ -112,7 +112,8 @@ class DorBarChart {
           }
         });
 
-        item.addEventListener("click", function () {
+        item.addEventListener("click", function (ev) {
+          ev.stopPropagation();
           barChartItems.forEach(otherItem => {
             if (otherItem.getAttribute("data-id") !== itemId) {
               otherItem.classList.remove("selected");
@@ -126,7 +127,9 @@ class DorBarChart {
               popup.remove();
             });
           }
-          createNewPopup(itemData, item);
+          if (item.classList.contains("selected")) {
+            createNewPopup(itemData, item);
+          }
         });
       }
 
@@ -147,6 +150,7 @@ class DorBarChart {
         const gridWidth = gridContainer.offsetWidth;
         
         const itemParents = document.querySelectorAll(`[data-id="${parentId}"]`);
+        console.log(itemParents);
         itemParents.forEach(itemParent => {
           const clonedNode = popupElement.cloneNode(true);
           if (itemParent.classList.contains("display-small")) {

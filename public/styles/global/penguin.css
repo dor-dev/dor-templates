@@ -110,7 +110,7 @@ li {
 }
 
 a {
-  color: inherit;
+  color: var(--primary-color);
   text-decoration: none;
 }
 
@@ -177,13 +177,18 @@ input[type="number"] {
   appearance: textfield;
 }
 
+footer {
+  padding: 2rem;
+  background-color: var(--background-color-90);
+}
+
 @media (max-width: 800px) {
   aside {
     position: absolute;
     top: var(--header-height);
     left: 0;
     width: 100%;
-    z-index: 5;
+    z-index: 99;
     max-height: calc(100vh - var(--header-height));
   }
   aside:nth-of-type(2) {
@@ -199,9 +204,9 @@ input[type="number"] {
     display: none;
   }
 
-  header menu {
+  /* header menu {
     display: none;
-  }
+  } */
 }
 
 @media (min-width: 801px) {
