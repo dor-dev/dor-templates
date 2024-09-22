@@ -78,7 +78,6 @@ class DorTable {
   }
 
   loadHtml() {
-    console.log(this.#sorting, this.#filtering, this.#pagination);
     const currentSortingField = this.#sorting.field;
     const currentSortingType = this.#sorting.type;
     if (currentSortingField) {
@@ -90,9 +89,6 @@ class DorTable {
       }
     }
 
-    const startIndex = (this.#pagination.currentPageNumber - 1) * this.pagination.pageSize;
-    const endIndex = this.#pagination.currentPageNumber * this.#pagination.pageSize;
-    
     this.#filteredData = this.#data.filter(item => {
       let isIncluded = true;
       Object.entries(this.#filtering).forEach(([key, value]) => {
@@ -115,6 +111,13 @@ class DorTable {
       });
       return isIncluded;
     });
+
+    if (this.#pagination.currentPageNumber > this.maxPageSize) {
+      this.#pagination.currentPageNumber = this.maxPageSize;
+    }
+
+    const startIndex = (this.#pagination.currentPageNumber - 1) * this.pagination.pageSize;
+    const endIndex = this.#pagination.currentPageNumber * this.#pagination.pageSize;
 
     const pageData = this.#filteredData.slice(startIndex, endIndex);
 
@@ -173,7 +176,7 @@ class DorTable {
         '<p>' + 
           `${String(startIndex + 1).padStart(stringPadding, "0")} - ` + 
           `${String(endIndex).padStart(stringPadding, "0")} / ` + 
-          `${this.#filteredData.length}` + 
+          `${String(this.#filteredData.length).padStart(stringPadding, "0")}` + 
         '</p>' + 
         '<select>' + 
           [5, 10, 20, 30, 50, 100].map(option => {
